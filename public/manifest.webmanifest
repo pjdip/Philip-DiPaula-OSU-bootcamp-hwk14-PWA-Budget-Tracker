@@ -1,0 +1,23 @@
+{
+    "name": "Budget Tracker PWA",
+    "short_name": "Budget PWA",
+    "categories": ["finance", "progressive web app", "dreams"],
+    "description": "Awesome budget tracking progressive web application to help you achieve your dreams.",
+    "lang": "en-US",
+    "start_url": ".",
+    "background_color": "#0042FF",
+    "theme_color": "#EC00FF",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
