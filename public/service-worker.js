@@ -77,3 +77,71 @@ self.addEventListener('activate', event => {
             .then(() => self.clients.claim())
     );
 });
+
+// Fetch Event Handler
+self.addEventListener('fetch', event => {
+
+    // browser defaults for non-GET requests
+    if (event.request.method != 'GET') return;
+
+    // transaction fetches
+    if (event.request.url.includes("/api/")) {
+        event.respondWith(
+            caches
+                .open(TRANSACTIONS)
+                .then(cache => {
+                    return fetch(event.request)
+                        .then(response => {
+
+                            // if network connectivity exists
+                            // clone and store response in the cache
+                            if (response.status === 200) {
+                                cache.put(event.request.url, response.clone())
+                            }
+                            return response;
+                        })
+                        .catch(err => {
+                            // if network request failed, check the cache
+                            cache
+                                .match(event.request)
+                                .then(cachedResponse => {
+                                    if (cachedResponse) {
+                                        return cachedResponse;
+                                    }
+                                })
+                        });
+                })
+                .catch(err => console.error(err))
+        );
+        return;
+    }
+
+    else if (event.request.url.startsWith(self.location.origin)) {
+        event.respondwith(
+            caches
+                .match(event.requestion)
+                .then(cachedResponse => {
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                    return caches.open(RUNTIME).then(cache => {
+                        return fetch(event.request).then(response => {
+                            return cache.put(event.request, response.clone()).then(() => {
+                                return response;
+                            });
+                        });
+                    });
+                })
+        );
+    }
+
+    event.respondWith(
+        caches
+            .open(PRECACHE)
+            .then(cache => {
+                return cache.match(event.request).then(response => {
+                    return response || fetch(event.request);
+                });
+            })
+    );
+});
