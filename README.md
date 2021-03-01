@@ -15,3 +15,6 @@ https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent
 
 indexDB:
 https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
+
+fetch:
+https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
