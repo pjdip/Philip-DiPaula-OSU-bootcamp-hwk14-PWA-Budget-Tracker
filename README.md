@@ -10,7 +10,8 @@ https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Offline_Servic
 
 cache:
 https://developer.mozilla.org/en-US/docs/Web/API/Cache
-
 https://developer.mozilla.org/en-US/docs/Web/API/InstallEvent
 https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent
 
+indexDB:
+https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
