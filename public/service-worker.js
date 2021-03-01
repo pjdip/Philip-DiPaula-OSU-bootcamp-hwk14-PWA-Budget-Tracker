@@ -17,29 +17,32 @@ const FILES_TO_CACHE = [
 
 // Install Event Handler
 self.addEventListener('install', event => {
+
+    // Static, Precache Files
     event.waitUntil(
         caches
-
-            // Static, Precache Files
             .open(PRECACHE)
             .then(cache => {
-                cache.addAll(FILES_TO_CACHE);
                 console.log("pre-cache successful!");
+                return cache.addAll(FILES_TO_CACHE);
             })
             .catch(err => console.error("pre-cache failed: ", err))
-
-            // Transaction Data
+    );
+    
+    // Transaction Pre-cache Data
+/*     event.waitUntil(
+        caches
             .open(TRANSACTIONS)
             .then(cache => {
                 cache.add("/api/transaction");
-                console.log("transactions cache successful!");
+                console.log("transaction pre-cache successful!");
             })
             .catch(err => console.error("transaction cache failed: ", err))
+    ); */
 
-            // tells the browser to activate the service-worker
-            // immediately after installation
-            .then(self.skipWaiting())
-    );
+    // tells the browser to activate the service-worker
+    // immediately after installation
+    self.skipWaiting();
 });
 
 // Activate Event Handler
@@ -102,13 +105,13 @@ self.addEventListener('fetch', event => {
                         })
                         .catch(err => {
                             // if network request failed, check the cache
-                            cache
+                            return cache
                                 .match(event.request)
-                                .then(cachedResponse => {
+/*                                 .then(cachedResponse => {
                                     if (cachedResponse) {
                                         return cachedResponse;
                                     }
-                                })
+                                }) */
                         });
                 })
                 .catch(err => console.error(err))
@@ -116,8 +119,8 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    else if (event.request.url.startsWith(self.location.origin)) {
-        event.respondwith(
+/*     else if (event.request.url.startsWith(self.location.origin)) {
+        event.respondWith(
             caches
                 .match(event.requestion)
                 .then(cachedResponse => {
@@ -133,15 +136,12 @@ self.addEventListener('fetch', event => {
                     });
                 })
         );
-    }
+        return;
+    } */
 
     event.respondWith(
-        caches
-            .open(PRECACHE)
-            .then(cache => {
-                return cache.match(event.request).then(response => {
-                    return response || fetch(event.request);
-                });
-            })
+        caches.match(event.request).then(response => {
+            return response || fetch(event.request);
+        })
     );
 });
