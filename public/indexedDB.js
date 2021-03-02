@@ -19,18 +19,35 @@ request.onsuccess = event => {
     db = event.target.result;
     
     // Check if app is online before accessing db
-    if (navigator.onLine) checkDatabase();
+    if (navigator.onLine) {
+        checkDatabase();
+    }
+};
+
+// Function for saving 'record' to the 'pending' obect store
+function saveRecord(record) {
+
+    // Open a transaction, access the object store, and add the record
+    console.log("storing in indexedDB");
+    const transaction = db.transaction(["pending"], "readwrite");
+    const store = transaction.objectStore("pending");
+    store.add(record);
+
+/*     db
+        .transaction("pending", "readwrite")
+        .objectStore("pending")
+        .add(record); */
 };
 
 function checkDatabase () {
 
     // Open a transaction on pending db, access object store, and get all records
     const transaction = db.transaction(["pending"], "readwrite");
-    const store = transaction.createObjectStore("pending");
+    const store = transaction.objectStore("pending");
     const allRecords = store.getAll();
 
     // Update the database with pending transactions
-    allRecords.onsuccess() = () => {
+    allRecords.onsuccess = () => {
         if (allRecords.result.length > 0) {
 
             // Access this api route
@@ -49,31 +66,18 @@ function checkDatabase () {
                 console.log("db updated successfully");
 
                 // Open a transaction, access the object store, and clear it
-                db
+                const transaction = db.transaction(["pending"], "readwrite");
+                const store = transaction.objectStore("pending");
+                store.clear();
+
+/*                 db
                     .transaction("pending", "readwrite")
                     .objectStore("pending")
-                    .clear();
-/*                 const transaction = db.transaction(["pending"], "readwrite");
-                const store = transaction.objectStore("pending");
-                store.clear(); */
+                    .clear(); */
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error("we're having difficulties ", err));
         }
     };
-};
-
-// Function for saving 'record' to the 'pending' obect store
-export function saveRecord(record) {
-    
-/*     const transaction = db.transaction(["pending"], "readwrite");
-    const store = transaction.objectStore("pending");
-    store.add(record); */
-
-    // Open a transaction, access the object store, and add the record
-    db
-        .transaction("pending", "readwrite")
-        .objectStore("pending")
-        .add(record);
 };
 
 // Listen for app to come online
