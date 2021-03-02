@@ -3,7 +3,7 @@
 ## These are the files for the homework assignment associated with section 18 of the OSU Web Development Bootcamp
 
 * Here is a link to the [github](https://github.com/pjdip/Philip-DiPaula-OSU-bootcamp-hwk18-PWA-Budget-Tracker)
-* Here is a link to the deployed application on [heroku]()
+* Here is a link to the deployed application on [heroku](https://mighty-savannah-32837.herokuapp.com/)
 
 The goal of this assignment was to build an MVC application for budget tracking with offline access and functionality. Using service workers, I was able to store budget entries in indexedDB, in order to update the [mongodb](https://www.mongodb.com/) database when online activity resumed.
 
