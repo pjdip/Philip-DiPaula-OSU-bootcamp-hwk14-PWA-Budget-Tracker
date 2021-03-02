@@ -9,8 +9,17 @@ request.onupgradeneeded = event => {
     db.createObjectStore("pending", { autoIncrement: true });
 };
 
+// Handle error
 request.onerror = event => {
     console.log("Ruh Roh... Looks like there's an issue with your indexedDB: " + event.target.errorCode);
+};
+
+// Handle success
+request.onsuccess = event => {
+    db = event.target.result;
+    
+    // Check if app is online before accessing db
+    if (navigator.onLine) checkDatabase();
 };
 
 function checkDatabase () {
