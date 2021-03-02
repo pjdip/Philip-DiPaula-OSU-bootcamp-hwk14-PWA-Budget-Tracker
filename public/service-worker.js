@@ -2,7 +2,6 @@ console.log("hello from your service worker ;)");
 
 // Defining caches and files
 const PRECACHE = "precache-v1";
-const RUNTIME = "runtime";
 const TRANSACTIONS = "transactions";
 
 const FILES_TO_CACHE = [
@@ -13,7 +12,8 @@ const FILES_TO_CACHE = [
     'styles.css',
     'manifest.webmanifest',
     '/icons/icon-192x192.png',
-    '/icons/icon-512x512.png'
+    '/icons/icon-512x512.png',
+    'https://cdn.jsdelivr.net/npm/chart.js@2.8.0'
 ];
 
 // Install Event Handler
@@ -29,17 +29,6 @@ self.addEventListener('install', event => {
             })
             .catch(err => console.error("pre-cache failed: ", err))
     );
-    
-    // Transaction Pre-cache Data
-/*     event.waitUntil(
-        caches
-            .open(TRANSACTIONS)
-            .then(cache => {
-                cache.add("/api/transaction");
-                console.log("transaction pre-cache successful!");
-            })
-            .catch(err => console.error("transaction cache failed: ", err))
-    ); */
 
     // tells the browser to activate the service-worker
     // immediately after installation
@@ -48,7 +37,7 @@ self.addEventListener('install', event => {
 
 // Activate Event Handler
 self.addEventListener('activate', event => {
-    const currentCaches = [PRECACHE, TRANSACTIONS, RUNTIME];
+    const currentCaches = [PRECACHE, TRANSACTIONS];
     event.waitUntil(
         caches
             .keys()
@@ -65,19 +54,6 @@ self.addEventListener('activate', event => {
                     })
                 );
             })
-
-/*             .then(cacheNames => {
-                return cacheNames.filter(cacheName => !currentCaches.includes(cacheName));
-            })
-            .then(cachesToDelete => {
-                return Promise.all(
-                    cachesToDelete.map(cacheToDelete => {
-                        console.log("removing old cache data ", cacheToDelete);
-                        return caches.delete(cacheToDelete);
-                    })
-                );
-            }) */
-
             .then(() => self.clients.claim())
     );
 });
@@ -86,7 +62,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
 
     // browser defaults for non-GET requests
-    if (event.request.method != 'GET') return;
+/*     if (event.request.method != 'GET') return; */
 
     // transaction fetches
     if (event.request.url.includes("/api/")) {
@@ -105,41 +81,24 @@ self.addEventListener('fetch', event => {
                             return response;
                         })
                         .catch(err => {
+
                             // if network request failed, check the cache
-                            return cache
-                                .match(event.request)
+                            // only handles 'get' requests
+                            if (event.request.method != 'GET') return;
+                            return caches.match(event.request)
 /*                                 .then(cachedResponse => {
                                     if (cachedResponse) {
                                         return cachedResponse;
                                     }
-                                }) */
+                                }); */
                         });
                 })
-                .catch(err => console.error(err))
+                .catch(err => console.error("holy error, batman ", err))
         );
         return;
     }
 
-/*     else if (event.request.url.startsWith(self.location.origin)) {
-        event.respondWith(
-            caches
-                .match(event.requestion)
-                .then(cachedResponse => {
-                    if (cachedResponse) {
-                        return cachedResponse;
-                    }
-                    return caches.open(RUNTIME).then(cache => {
-                        return fetch(event.request).then(response => {
-                            return cache.put(event.request, response.clone()).then(() => {
-                                return response;
-                            });
-                        });
-                    });
-                })
-        );
-        return;
-    } */
-
+    // for non-API requests, serve using 'offline-first' approach
     event.respondWith(
         caches.match(event.request).then(response => {
             return response || fetch(event.request);

@@ -17,7 +17,7 @@ request.onerror = event => {
 // Handle success
 request.onsuccess = event => {
     db = event.target.result;
-    
+
     // Check if app is online before accessing db
     if (navigator.onLine) {
         checkDatabase();
@@ -32,13 +32,9 @@ function saveRecord(record) {
     const transaction = db.transaction(["pending"], "readwrite");
     const store = transaction.objectStore("pending");
     store.add(record);
-
-/*     db
-        .transaction("pending", "readwrite")
-        .objectStore("pending")
-        .add(record); */
 };
 
+// Updates the backend mongodb db with pending transactions
 function checkDatabase () {
 
     // Open a transaction on pending db, access object store, and get all records
@@ -69,11 +65,6 @@ function checkDatabase () {
                 const transaction = db.transaction(["pending"], "readwrite");
                 const store = transaction.objectStore("pending");
                 store.clear();
-
-/*                 db
-                    .transaction("pending", "readwrite")
-                    .objectStore("pending")
-                    .clear(); */
             })
             .catch(err => console.error("we're having difficulties ", err));
         }
