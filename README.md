@@ -13,8 +13,9 @@ https://developer.mozilla.org/en-US/docs/Web/API/Cache
 https://developer.mozilla.org/en-US/docs/Web/API/InstallEvent
 https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent
 
-indexDB:
+indexedDB:
 https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
+https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore
 
 fetch:
 https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch

@@ -48,7 +48,7 @@ function checkDatabase () {
                 // If successful, log it
                 console.log("db updated successfully");
 
-                // Open a transaction, access the object store and clear it
+                // Open a transaction, access the object store, and clear it
                 const transaction = db.transaction(["pending"], "readwrite");
                 const store = transaction.objectStore("pending");
                 store.clear();
@@ -56,4 +56,18 @@ function checkDatabase () {
             .catch(err => console.error(err));
         }
     };
+};
+
+// Function for saving 'record' to the 'pending' obect store
+export function saveRecord(record) {
+    
+    // Open a transaction, access the object store, and add the record
+/*     const transaction = db.transaction(["pending"], "readwrite");
+    const store = transaction.objectStore("pending");
+    store.add(record); */
+
+    db
+        .transaction("pending", "readwrite")
+        .objectStore("pending")
+        .add(record);
 };
